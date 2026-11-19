@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Donuts &amp; Do Nots</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#f6c7d6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Donuts">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&display=swap">
+<style>
+/* Palette comes from the bakery case: strawberry frosting for donuts,
+   burnt sugar for do nots, dough and chocolate for everything else. */
+:root {
+  --bg: #fdf6ee;
+  --surface: #ffffff;
+  --ink: #3a2418;
+  --muted: #86695a;
+  --line: #efdfd0;
+  --dough: #e9b877;
+  --frost: #f48fb1;
+  --frost-soft: #fde4ec;
+  --frost-ink: #a3214f;
+  --bad: #c0392b;
+  --bad-soft: #fbe3df;
+  --bad-ink: #8f2317;
+  --ok: #2a7549;
+  --amber: #a86400;
+  --glass: rgba(170, 215, 235, .16);
+  --glass-edge: #a9c6d4;
+  --glass-shine: rgba(255, 255, 255, .85);
+  --display: "Bricolage Grotesque", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1d1410;
+    --surface: #2a1e18;
+    --ink: #f7ece2;
+    --muted: #b89f8f;
+    --line: #40302a;
+    --dough: #d9a765;
+    --frost: #f48fb1;
+    --frost-soft: #47202e;
+    --frost-ink: #ffb3cb;
+    --bad: #ef6b5c;
+    --bad-soft: #45201b;
+    --bad-ink: #ffb0a6;
+    --ok: #86d3a0;
+    --amber: #f0b352;
+    --glass: rgba(170, 215, 235, .10);
+    --glass-edge: #6f8f9e;
+    --glass-shine: rgba(255, 255, 255, .28);
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); }
+body { padding: max(18px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(48px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+main { max-width: 560px; margin: 0 auto; }
+button { font-family: inherit; -webkit-tap-highlight-color: transparent; }
+h1 { font-family: var(--display); font-weight: 700; font-size: 28px; line-height: 1.05; margin: 4px 0 2px; letter-spacing: -0.01em; }
+h1 .not { color: var(--bad); }
+.status { font-size: 12px; color: var(--muted); margin: 0 0 12px; min-height: 15px; }
+.status.ok { color: var(--ok); }
+.status.bad { color: var(--bad); }
+
+nav { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 6px 0 10px; margin-bottom: 6px; }
+.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 4px; }
+.tabs button { border: 0; background: transparent; color: var(--muted); border-radius: 10px; padding: 9px 0; font-family: var(--display); font-weight: 500; font-size: 13.5px; cursor: pointer; position: relative; }
+.tabs button[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+.badge { position: absolute; top: 2px; right: 2px; min-width: 17px; height: 17px; border-radius: 9px; background: var(--bad); color: #fff; font-size: 11px; line-height: 17px; padding: 0 4px; font-family: var(--body); font-weight: 600; }
+.view { display: none; }
+.view.on { display: block; }
+
+.jars { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.jar { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px 12px 12px; text-align: center; }
+.jar svg { width: 100%; max-width: 140px; height: auto; display: block; margin: 0 auto; }
+.jar .big { font-family: var(--display); font-weight: 700; font-size: 44px; line-height: 1; margin-top: 4px; }
+.jar .what { font-family: var(--display); font-weight: 500; font-size: 15px; margin-top: 2px; }
+.jar .next { color: var(--muted); font-size: 12.5px; line-height: 1.3; margin: 6px 0 10px; min-height: 33px; }
+.jar.good .big { color: var(--frost-ink); }
+.jar.bad .big { color: var(--bad-ink); }
+.give { width: 100%; border: 0; border-radius: 12px; padding: 13px 8px; font-family: var(--display); font-weight: 700; font-size: 16px; cursor: pointer; }
+.give.good { background: var(--frost); color: #4a0f26; }
+.give.bad { background: var(--bad); color: #fff; }
+.give:active { transform: scale(.98); }
+
+h2 { font-family: var(--display); font-weight: 700; font-size: 19px; margin: 24px 0 4px; }
+.sub { color: var(--muted); font-size: 13.5px; margin: 0 0 10px; line-height: 1.4; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.item { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-top: 1px solid var(--line); }
+.item:first-child { border-top: 0; }
+.item .txt { flex: 1; min-width: 0; }
+.item .name { font-size: 15.5px; line-height: 1.25; }
+.item .meta { color: var(--muted); font-size: 12.5px; margin-top: 2px; line-height: 1.35; }
+.cost { flex: none; font-family: var(--display); font-weight: 700; font-size: 14px; color: var(--frost-ink); background: var(--frost-soft); border-radius: 999px; padding: 4px 9px; white-space: nowrap; }
+.act { flex: none; border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 10px; padding: 8px 11px; font-size: 13.5px; cursor: pointer; }
+.act:disabled { opacity: .38; cursor: default; }
+.act.sure { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.act.go { background: var(--bad); border-color: var(--bad); color: #fff; font-weight: 600; }
+.trade { margin-top: 12px; }
+.owed { display: flex; align-items: center; gap: 12px; padding: 14px; }
+.owed .num { font-family: var(--display); font-weight: 700; font-size: 34px; color: var(--bad-ink); min-width: 34px; text-align: center; }
+.dot { flex: none; width: 10px; height: 10px; border-radius: 50%; }
+.dot.donut, .dot.reward { background: var(--frost); }
+.dot.donot, .dot.sentence { background: var(--bad); }
+.empty { padding: 16px 14px; color: var(--muted); font-size: 14px; }
+.more { display: block; width: 100%; border: 0; border-top: 1px solid var(--line); background: transparent; color: var(--muted); padding: 11px; font-size: 13.5px; cursor: pointer; }
+
+/* wheel */
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 4px; margin-bottom: 10px; }
+.seg button { border: 0; background: transparent; color: var(--muted); border-radius: 9px; padding: 9px; font-family: var(--display); font-weight: 500; font-size: 15px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--frost); color: #4a0f26; }
+.levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.lvl { background: var(--surface); color: var(--muted); border: 1px solid var(--line); border-radius: 12px; padding: 8px 4px; cursor: pointer; text-align: center; }
+.lvl .n { display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+.lvl .w { display: block; font-family: var(--display); font-weight: 500; font-size: 14px; margin-top: 1px; }
+.lvl[aria-pressed="true"] { border-color: var(--bad); color: var(--ink); box-shadow: inset 0 0 0 1px var(--bad); }
+.why { color: var(--muted); font-size: 13px; line-height: 1.4; margin: 10px 2px 18px; min-height: 18px; }
+.stage { position: relative; width: min(100%, 440px); aspect-ratio: 1; margin: 0 auto; }
+.stage canvas { width: 100%; height: 100%; display: block; border-radius: 50%; box-shadow: 0 0 0 7px var(--dough), 0 10px 30px rgba(60, 30, 10, .25); }
+.pointer { position: absolute; left: 50%; top: -12px; transform: translateX(-50%); width: 0; height: 0; z-index: 2;
+  border-left: 13px solid transparent; border-right: 13px solid transparent; border-top: 26px solid var(--ink); }
+.hub { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 26%; aspect-ratio: 1; border-radius: 50%;
+  background: var(--bg); border: 7px solid var(--dough); color: var(--ink); font-family: var(--display); font-weight: 700; font-size: 17px; cursor: pointer; z-index: 2; }
+.hub:disabled { cursor: default; opacity: .8; }
+.result { margin-top: 22px; padding: 16px; text-align: center; }
+.result .label { color: var(--bad-ink); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+.result .rname { font-family: var(--display); font-weight: 700; font-size: 23px; margin: 6px 0 4px; }
+.result .detail { color: var(--muted); font-size: 15px; line-height: 1.45; }
+.result .act { margin-top: 12px; padding: 11px 16px; font-size: 15px; }
+
+/* reason sheet */
+.veil { position: fixed; inset: 0; background: rgba(20, 10, 5, .45); display: none; align-items: flex-end; justify-content: center; z-index: 10; }
+.veil.open { display: flex; }
+.sheet { background: var(--surface); width: 100%; max-width: 560px; border-radius: 22px 22px 0 0; padding: 18px 16px 22px; max-height: 92vh; overflow-y: auto; }
+.sheet h3 { font-family: var(--display); font-weight: 700; font-size: 20px; margin: 0 0 3px; }
+.sheet p { color: var(--muted); font-size: 13.5px; margin: 0 0 12px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 999px; padding: 10px 14px; font-size: 15px; cursor: pointer; }
+.chip .pips { color: var(--bad); margin-left: 6px; font-size: 11px; letter-spacing: 1px; vertical-align: 1px; }
+.own { display: flex; gap: 8px; margin-top: 14px; }
+.own input { flex: 1; min-width: 0; border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 12px; padding: 12px; font-size: 16px; font-family: inherit; }
+.own input:focus { outline: 2px solid var(--frost); outline-offset: 1px; }
+.own button { border: 0; border-radius: 12px; padding: 0 16px; font-family: var(--display); font-weight: 700; font-size: 15px; cursor: pointer; background: var(--ink); color: var(--bg); }
+.sev { display: none; align-items: center; gap: 8px; margin-top: 10px; color: var(--muted); font-size: 13.5px; }
+.sheet.bad .sev { display: flex; }
+.sev button { border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 9px; padding: 6px 11px; font-size: 13.5px; cursor: pointer; }
+.sev button[aria-pressed="true"] { background: var(--bad); border-color: var(--bad); color: #fff; }
+.cancel { display: block; width: 100%; margin-top: 12px; border: 0; background: transparent; color: var(--muted); padding: 10px; font-size: 15px; cursor: pointer; }
+#app { display: none; }
+body.open #app { display: block; }
+body.open #gate { display: none; }
+#gate { max-width: 340px; margin: 12vh auto 0; text-align: center; }
+#gate svg { width: 120px; height: 120px; }
+#gate h1 { margin-top: 14px; }
+#gate form { display: flex; gap: 8px; margin-top: 22px; }
+#gate input { flex: 1; min-width: 0; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 12px; padding: 13px 12px; font-size: 16px; font-family: inherit; }
+#gate input:focus { outline: 2px solid var(--frost); outline-offset: 1px; }
+#gate form button { border: 0; border-radius: 12px; padding: 0 18px; font-family: var(--display); font-weight: 700; font-size: 16px; cursor: pointer; background: var(--frost); color: #4a0f26; }
+#gate .msg { color: var(--bad); font-size: 13.5px; min-height: 18px; margin-top: 10px; }
+.jarbox { text-align: center; margin: 4px 0 16px; }
+.jarbox svg { width: 190px; height: auto; display: block; margin: 0 auto; }
+.jarCount { font-family: var(--display); font-weight: 700; font-size: 18px; margin-top: 6px; }
+.jarTally { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+.pill { font-size: 13px; border-radius: 999px; padding: 5px 11px; border: 1px solid var(--line); background: var(--surface); }
+.pill b { font-family: var(--display); margin-right: 4px; }
+.pill.yes b { color: var(--ok); } .pill.counter b { color: var(--amber); } .pill.no b { color: var(--muted); }
+.tag.counter { color: var(--amber); background: transparent; border: 1px solid var(--amber); }
+.idea .reply { border-left: 3px solid var(--amber); padding: 4px 0 4px 10px; margin: 8px 0 2px; font-size: 14.5px; line-height: 1.35; white-space: pre-wrap; overflow-wrap: anywhere; }
+.idea .reply span { display: block; font-size: 11.5px; letter-spacing: .04em; text-transform: uppercase; color: var(--amber); margin-bottom: 2px; }
+.idea .counterForm { display: flex; gap: 8px; margin-top: 8px; }
+.idea .counterForm input { flex: 1; min-width: 0; border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 10px; padding: 9px 10px; font-size: 16px; font-family: inherit; }
+.ideaForm { padding: 14px; }
+.ideaForm .chip { padding: 8px 12px; font-size: 14px; }
+.ideaForm .chip[aria-pressed="true"] { background: var(--frost); border-color: var(--frost); color: #4a0f26; }
+.ideaForm textarea { display: block; width: 100%; margin: 12px 0; border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 12px; padding: 12px; font-size: 16px; font-family: inherit; resize: vertical; }
+.ideaForm textarea:focus { outline: 2px solid var(--frost); outline-offset: 1px; }
+.ideaMsg { font-size: 13px; color: var(--muted); min-height: 16px; margin-top: 8px; text-align: center; }
+.tag { display: inline-block; font-size: 11.5px; letter-spacing: .04em; text-transform: uppercase; color: var(--frost-ink); background: var(--frost-soft); border-radius: 999px; padding: 2px 8px; margin-right: 6px; }
+.tag.yes { color: var(--ok); background: transparent; border: 1px solid var(--ok); }
+.tag.no { color: var(--muted); background: transparent; border: 1px solid var(--line); }
+.idea { display: block; padding: 12px 14px; border-top: 1px solid var(--line); }
+.idea:first-child { border-top: 0; }
+.idea .body { font-size: 15.5px; line-height: 1.35; margin: 6px 0 4px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.idea .acts { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.forget { display: block; margin: 34px auto 0; border: 0; background: transparent; color: var(--muted); font-size: 13px; text-decoration: underline; cursor: pointer; padding: 8px; }
+@media (prefers-reduced-motion: no-preference) { .jar svg .fill { transition: stroke-dashoffset .5s ease; } }
+</style>
+</head>
+<body>
+<div id="gate">
+  <svg viewBox="0 0 120 120" aria-hidden="true">
+    <circle cx="60" cy="60" r="38" fill="none" stroke="var(--dough)" stroke-width="30"/>
+    <circle cx="60" cy="60" r="38" fill="none" stroke="var(--frost)" stroke-width="22"/>
+  </svg>
+  <h1>Donuts &amp; Do <span class="not">Nots</span></h1>
+  <form id="gateForm">
+    <input type="password" id="gateKey" placeholder="Passcode" autocomplete="off" autocapitalize="off" aria-label="Passcode">
+    <button type="submit">Open</button>
+  </form>
+  <div class="msg" id="gateMsg"></div>
+</div>
+<main id="app">
+  <h1>Donuts &amp; Do <span class="not">Nots</span></h1>
+  <p class="status" id="status">Loading...</p>
+
+  <nav>
+    <div class="tabs" role="tablist">
+      <button role="tab" data-view="jars" aria-selected="true">Jars</button>
+      <button role="tab" data-view="prizes" aria-selected="false">Prizes</button>
+      <button role="tab" data-view="wheel" aria-selected="false">Wheel<span class="badge" id="wheelBadge" hidden></span></button>
+      <button role="tab" data-view="ledger" aria-selected="false">Ledger</button>
+      <button role="tab" data-view="ideas" aria-selected="false">Ideas<span class="badge" id="ideasBadge" hidden></span></button>
+    </div>
+  </nav>
+
+  <!-- JARS -->
+  <section class="view on" id="view-jars">
+    <div class="jars">
+      <div class="jar good">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="60" cy="60" r="38" fill="none" stroke="var(--dough)" stroke-width="30"/>
+          <circle class="fill" id="ringGood" cx="60" cy="60" r="38" fill="none" stroke="var(--frost)" stroke-width="22"
+                  stroke-linecap="round" transform="rotate(-90 60 60)" stroke-dasharray="238.76" stroke-dashoffset="238.76"/>
+          <g id="sprinkles" stroke-width="3.2" stroke-linecap="round" opacity="0">
+            <line x1="60" y1="16" x2="65" y2="20" stroke="#fff"/><line x1="92" y1="38" x2="97" y2="35" stroke="#7ad0c3"/>
+            <line x1="99" y1="68" x2="96" y2="74" stroke="#ffe08a"/><line x1="78" y1="95" x2="84" y2="94" stroke="#fff"/>
+            <line x1="44" y1="98" x2="40" y2="93" stroke="#7ad0c3"/><line x1="21" y1="72" x2="22" y2="66" stroke="#ffe08a"/>
+            <line x1="26" y1="40" x2="31" y2="36" stroke="#fff"/>
+          </g>
+        </svg>
+        <div class="big" id="goodNum">0</div>
+        <div class="what">Donuts</div>
+        <div class="next" id="goodNext"></div>
+        <button class="give good" id="giveGood">+ Donut</button>
+      </div>
+      <div class="jar bad">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="60" cy="60" r="38" fill="none" stroke="var(--dough)" stroke-width="30"/>
+          <circle class="fill" id="ringBad" cx="60" cy="60" r="38" fill="none" stroke="var(--bad)" stroke-width="22"
+                  stroke-linecap="round" transform="rotate(-90 60 60)" stroke-dasharray="238.76" stroke-dashoffset="238.76"/>
+          <line x1="24" y1="24" x2="96" y2="96" stroke="var(--bad)" stroke-width="9" stroke-linecap="round"/>
+        </svg>
+        <div class="big" id="badNum">0</div>
+        <div class="what">Do Nots</div>
+        <div class="next" id="badNext"></div>
+        <button class="give bad" id="giveBad">+ Do Not</button>
+      </div>
+    </div>
+
+    <div class="card trade">
+      <div class="item">
+        <div class="txt">
+          <div class="name">The trade</div>
+          <div class="meta">1 donut erases 1 Do Not, oldest first.</div>
+        </div>
+        <button class="act" id="tradeBtn" disabled>Trade</button>
+      </div>
+    </div>
+
+    <h2>The penalty box</h2>
+    <p class="sub" id="penaltySub"></p>
+    <div class="card">
+      <div class="owed">
+        <div class="num" id="owedNum">0</div>
+        <div class="txt" style="flex:1">
+          <div class="name" id="owedText">Nothing owed.</div>
+          <div class="meta" id="owedMeta"></div>
+        </div>
+        <button class="act go" id="toWheel" hidden>Spin</button>
+      </div>
+    </div>
+
+    <h2>Sentences to serve</h2>
+    <div class="card" id="pending"></div>
+  </section>
+
+  <!-- PRIZES -->
+  <section class="view" id="view-prizes">
+    <h2 style="margin-top:8px">The prize counter</h2>
+    <p class="sub" id="prizeSub"></p>
+    <div class="card" id="prizes"></div>
+  </section>
+
+  <!-- WHEEL -->
+  <section class="view" id="view-wheel">
+    <div class="seg" id="wheelPick">
+      <button data-wheel="anytime" aria-pressed="true"></button>
+      <button data-wheel="bed" aria-pressed="false"></button>
+    </div>
+    <div class="levels" id="levels">
+      <button class="lvl" data-level="1" aria-pressed="true"><span class="n">Level 1</span><span class="w"></span></button>
+      <button class="lvl" data-level="2" aria-pressed="false"><span class="n">Level 2</span><span class="w"></span></button>
+      <button class="lvl" data-level="3" aria-pressed="false"><span class="n">Level 3</span><span class="w"></span></button>
+    </div>
+    <p class="why" id="why"></p>
+    <div class="stage">
+      <div class="pointer" aria-hidden="true"></div>
+      <canvas id="wheel" width="960" height="960" aria-label="Wheel"></canvas>
+      <button class="hub" id="spin">Spin</button>
+    </div>
+    <div class="card result" aria-live="polite">
+      <div class="label" id="rLabel">Her sentence</div>
+      <div class="rname" id="rName">Spin to find out</div>
+      <div class="detail" id="rDetail">No respins allowed.</div>
+      <button class="act" id="record" hidden>Record this sentence</button>
+    </div>
+  </section>
+
+  <!-- LEDGER -->
+  <section class="view" id="view-ledger">
+    <h2 style="margin-top:8px">The ledger</h2>
+    <p class="sub" id="ledgerSub"></p>
+    <div class="card" id="ledger"></div>
+  </section>
+  <!-- IDEAS -->
+  <section class="view" id="view-ideas">
+    <h2 style="margin-top:8px">The suggestion jar</h2>
+    <p class="sub" id="ideasSub"></p>
+    <div class="jarbox">
+      <svg id="ideaJar" viewBox="0 0 200 224" role="img" aria-label="Suggestion jar">
+        <g id="jarTickets"></g>
+        <path d="M54 44 Q40 48 40 66 V192 Q40 212 60 212 H140 Q160 212 160 192 V66 Q160 48 146 44 Z" fill="var(--glass)" stroke="var(--glass-edge)" stroke-width="3"/>
+        <path d="M52 72 V180" stroke="var(--glass-shine)" stroke-width="5" stroke-linecap="round" fill="none"/>
+        <rect x="56" y="26" width="88" height="20" rx="4" fill="none" stroke="var(--glass-edge)" stroke-width="3"/>
+        <rect x="50" y="8" width="100" height="20" rx="6" fill="var(--dough)"/>
+        <rect x="86" y="14" width="28" height="6" rx="3" fill="var(--bg)"/>
+      </svg>
+      <div class="jarCount" id="jarCount"></div>
+      <div class="jarTally" id="jarTally"></div>
+    </div>
+    <div class="card ideaForm">
+      <div class="chips" id="ideaKinds"></div>
+      <textarea id="ideaText" maxlength="300" rows="3" aria-label="Your suggestion"></textarea>
+      <button class="give good" id="ideaSend">Drop it in the jar</button>
+      <div class="ideaMsg" id="ideaMsg"></div>
+    </div>
+    <h2>Every ticket</h2>
+    <div class="card" id="ideas"></div>
+  </section>
+  <button class="forget" id="forget">Lock this device</button>
+</main>
+
+<div class="veil" id="veil">
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <h3 id="sheetTitle"></h3>
+    <p id="sheetSub"></p>
+    <div class="chips" id="sheetChips"></div>
+    <form class="own" id="ownForm">
+      <input type="text" id="ownText" maxlength="80" placeholder="Something else" autocomplete="off">
+      <button type="submit">Add</button>
+    </form>
+    <div class="sev" id="sev">How bad?
+      <button type="button" data-pts="1" aria-pressed="true">Minor</button>
+      <button type="button" data-pts="2" aria-pressed="false">Medium</button>
+      <button type="button" data-pts="3" aria-pressed="false">Major</button>
+    </div>
+    <button class="cancel" id="cancel">Never mind</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- the rules ----------
+     Nothing about the game is written in this file. The prizes, the wheel and the names
+     arrive sealed (AES-GCM) and only open with a passcode. Two passcodes fit: one lets
+     you look, the other also lets you change the record. */
+  var SEALED = {"v": 1, "iter": 600000, "salt": "feCu0AW4npziuPTDbYBkWQ==", "content": {"iv": "17bGS1R53Z+HzIcT", "data": "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"}, "wraps": [{"iv": "3GYUF6KcZD8q9JRu", "data": "6bScEH9h9MkNAQfZJqwMl2dt+k0r+4jqfsqDwIFYg7cI+BitWQEnRDhDDjKumtDC"}, {"iv": "t7c63/5bGl9HzXqi", "data": "YfOa++a9du8H6h81JDWvJo66fKZ3VgY7P9QBYhKOKTTJBG2nRerDvP3SZIi+rxjd"}]};
+  var DO_NOTS_PER_PENALTY, PRIZES, WIPE, GOOD_REASONS, CHARGES, LEVEL_NAMES, WHEEL_NAMES, WHEELS, NAME, IDEA_KINDS;
+  function levelFor(points) { return points >= 7 ? 3 : (points >= 5 ? 2 : 1); }
+  function applyConfig(c) {
+    DO_NOTS_PER_PENALTY = c.DO_NOTS_PER_PENALTY; PRIZES = c.PRIZES; WIPE = c.WIPE; GOOD_REASONS = c.GOOD_REASONS;
+    CHARGES = c.CHARGES; LEVEL_NAMES = c.LEVEL_NAMES; WHEEL_NAMES = c.WHEEL_NAMES; WHEELS = c.WHEELS; NAME = c.NAME; IDEA_KINDS = c.IDEA_KINDS;
+    ideaKind = IDEA_KINDS[0].k;
+    $("ideasSub").textContent = c.IDEAS_SUB;
+    $("ideaText").placeholder = c.IDEAS_HINT;
+    var p = document.querySelectorAll("#wheelPick button"), i;
+    for (i = 0; i < p.length; i++) p[i].textContent = WHEEL_NAMES[p[i].getAttribute("data-wheel")];
+    var l = document.querySelectorAll(".lvl");
+    for (i = 0; i < l.length; i++) l[i].querySelector(".w").textContent = LEVEL_NAMES[l[i].getAttribute("data-level")];
+  }
+
+  /* ---------- shared storage (Supabase) ----------
+     The key below is a publishable key meant for browsers; it opens nothing by itself.
+     Row level security on the dn_ledger table reads the x-pass header, a fingerprint of
+     the passcode you typed: either passcode may read, only the keeper's may write. */
+  var API = "https://zquvatrihtctugeqqoju.supabase.co/rest/v1/dn_ledger";
+  var API_KEY = "sb_publishable_88Tn8Xn2e_ixTlwZfEGzKg_CDTOkqrD";
+  var FIELDS = "id,kind,label,detail,amount,pts,level,wheel,served,served_at,created_at";
+  var CACHE = "donuts.rows.v3", ADDS = "donuts.adds.v3", PATCHES = "donuts.patches.v3", DELS = "donuts.dels.v3", PASS = "donuts.pass.v1";
+  var KINDS = ["donut", "donot", "reward", "sentence"];
+
+  var server = [];       // rows as last seen on the server
+  var adds = {};         // id -> row waiting to be sent
+  var patches = {};      // id -> fields waiting to be sent
+  var dels = {};         // id -> true, waiting to be removed
+  var inflight = {};
+  var passToken = "";    // fingerprint of the passcode in use
+  var readOnly = true;   // true unless the keeper's passcode opened the page
+  var showAll = false;
+  var sureTimer = null;
+
+  function readJSON(key, fallback) {
+    try { var v = JSON.parse(localStorage.getItem(key)); return v || fallback; } catch (e) { return fallback; }
+  }
+  function saveLocal() {
+    try {
+      localStorage.setItem(CACHE, JSON.stringify(server));
+      localStorage.setItem(ADDS, JSON.stringify(adds));
+      localStorage.setItem(PATCHES, JSON.stringify(patches));
+      localStorage.setItem(DELS, JSON.stringify(dels));
+    } catch (e) {}
+  }
+  function clearLocal() {
+    [CACHE, ADDS, PATCHES, DELS, PASS].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} });
+  }
+  function headers() {
+    return { apikey: API_KEY, Authorization: "Bearer " + API_KEY, "Content-Type": "application/json", Prefer: "return=minimal", "x-pass": passToken };
+  }
+  function uuid() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+      var r = Math.random() * 16 | 0; return (c === "x" ? r : (r & 3 | 8)).toString(16);
+    });
+  }
+  function busy() { return Object.keys(adds).length + Object.keys(patches).length + Object.keys(dels).length > 0; }
+  function setStatus(kind, text) {
+    var el = document.getElementById("status");
+    el.textContent = text; el.className = "status " + kind;
+  }
+  function synced() { setStatus("ok", readOnly ? "View only · live" : "Synced"); }
+  function clean(list) {
+    return list.filter(function (x) { return x && KINDS.indexOf(x.kind) >= 0 && typeof x.created_at === "string"; });
+  }
+  /* Everything the page shows comes from this merged list, oldest first. */
+  function rows() {
+    var seen = {}, out = [];
+    server.forEach(function (r) {
+      seen[r.id] = true;
+      if (dels[r.id]) return;
+      if (patches[r.id]) {
+        var c = {};
+        Object.keys(r).forEach(function (k) { c[k] = r[k]; });
+        Object.keys(patches[r.id]).forEach(function (k) { c[k] = patches[r.id][k]; });
+        r = c;
+      }
+      out.push(r);
+    });
+    Object.keys(adds).forEach(function (id) { if (!seen[id] && !dels[id]) out.push(adds[id]); });
+    return out.sort(function (a, b) { return a.created_at < b.created_at ? -1 : a.created_at > b.created_at ? 1 : 0; });
+  }
+
+  /* One pass over the ledger gives every number the page shows. */
+  function tally(list) {
+    var t = { donut: 0, spent: 0, cleared: 0, donots: [], pending: [] };
+    list.forEach(function (r) {
+      if (r.kind === "donut") t.donut++;
+      else if (r.kind === "donot") t.donots.push(r);
+      else if (r.kind === "reward") { t.spent += r.amount || 0; if (r.label === WIPE) t.cleared++; }
+      else if (r.kind === "sentence") { t.cleared += r.amount || 0; if (!r.served) t.pending.push(r); }
+    });
+    t.good = t.donut - t.spent;
+    t.bad = t.donots.length - t.cleared;
+    t.open = t.donots.slice(Math.max(0, t.cleared));          // Do Nots not yet punished, oldest first
+    t.owed = Math.floor(Math.max(0, t.bad) / DO_NOTS_PER_PENALTY);
+    t.next = t.open.slice(0, DO_NOTS_PER_PENALTY);             // the ones the next spin answers for
+    t.nextPoints = t.next.reduce(function (s, r) { return s + (r.pts || 1); }, 0);
+    return t;
+  }
+
+  function add(body) {
+    if (readOnly) return;
+    body.id = uuid();
+    body.created_at = new Date().toISOString();
+    if (body.label) body.label = String(body.label).slice(0, 80);
+    adds[body.id] = body;
+    saveLocal(); render(); flush();
+  }
+  function patch(id, fields) {
+    if (readOnly) return;
+    if (adds[id] && !inflight[id]) Object.keys(fields).forEach(function (k) { adds[id][k] = fields[k]; });
+    else { patches[id] = patches[id] || {}; Object.keys(fields).forEach(function (k) { patches[id][k] = fields[k]; }); }
+    saveLocal(); render(); flush();
+  }
+  function remove(id) {
+    if (readOnly) return;
+    if (adds[id] && !inflight[id]) delete adds[id];
+    else dels[id] = true;
+    delete patches[id];
+    saveLocal(); render(); flush();
+  }
+
+  function sendFailed(e) {
+    if (e && /^(401|403)$/.test(e.message)) {
+      /* the database turned the write away, so this passcode can no longer change things */
+      readOnly = true; adds = {}; patches = {}; dels = {};
+      saveLocal(); setStatus("bad", "This passcode can't make changes any more. View only."); render(); pull();
+    } else setStatus("bad", "Offline. Changes will sync later.");
+  }
+  function send(tag, url, method, body, done) {
+    if (inflight[tag]) return;
+    inflight[tag] = true;
+    fetch(url, { method: method, headers: headers(), body: body ? JSON.stringify(body) : undefined })
+      .then(function (r) { if (!r.ok) throw new Error(String(r.status)); done(); synced(); })
+      .catch(sendFailed)
+      .then(function () { delete inflight[tag]; saveLocal(); });
+  }
+  function flush() {
+    if (readOnly) return;
+    Object.keys(adds).forEach(function (id) {
+      var row = adds[id];
+      send(id, API, "POST", row, function () {
+        if (!server.some(function (x) { return x.id === id; })) server.push(row);
+        if (adds[id] === row) delete adds[id];
+        if (busy()) setTimeout(flush, 0);
+      });
+    });
+    Object.keys(patches).forEach(function (id) {
+      if (adds[id]) return;                           // wait until the row itself has landed
+      var sent = patches[id];
+      send("p" + id, API + "?id=eq." + encodeURIComponent(id), "PATCH", sent, function () {
+        server.forEach(function (x) { if (x.id === id) Object.keys(sent).forEach(function (k) { x[k] = sent[k]; }); });
+        if (patches[id] === sent) delete patches[id];
+        if (busy()) setTimeout(flush, 0);
+      });
+    });
+    Object.keys(dels).forEach(function (id) {
+      if (inflight[id]) return;                       // its own insert is still on the way
+      send("d" + id, API + "?id=eq." + encodeURIComponent(id), "DELETE", null, function () {
+        server = server.filter(function (x) { return x.id !== id; });
+        delete dels[id]; delete adds[id];
+      });
+    });
+  }
+  function pull() {
+    if (!passToken) return;
+    pullIdeas();
+    if (busy() && !readOnly) { flush(); return; }
+    fetch(API + "?select=" + FIELDS + "&order=created_at.asc", { headers: headers(), cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+      .then(function (list) {
+        if (busy() && !readOnly) return;              // something changed here meanwhile; next pull catches up
+        var before = JSON.stringify(server);
+        server = clean(list);
+        synced(); saveLocal();
+        if (JSON.stringify(server) !== before) render();   // leave half-tapped buttons alone when nothing changed
+      })
+      .catch(function (e) {
+        setStatus("bad", e && /^(404|401|403)$/.test(e.message) ? "The shared record isn't set up yet." : "Offline. Showing the last copy saved on this device.");
+      });
+  }
+
+  /* ---------- small helpers ---------- */
+  var RING = 2 * Math.PI * 38;
+  function $(id) { return document.getElementById(id); }
+  function setRing(id, frac) {
+    $(id).setAttribute("stroke-dashoffset", String(RING * (1 - Math.max(0, Math.min(1, frac)))));
+  }
+  function plural(n, one, many) { return n + " " + (n === 1 ? one : many); }
+  function when(iso) {
+    var d = new Date(iso), s = (Date.now() - d.getTime()) / 1000;
+    if (s < 60) return "just now";
+    if (s < 3600) return Math.floor(s / 60) + " min ago";
+    if (s < 86400) return plural(Math.floor(s / 3600), "hr", "hrs") + " ago";
+    return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  /* A button that needs a second tap, since there are no pop-up confirms here. */
+  function twoTap(btn, label, sureLabel, fn) {
+    btn.textContent = label;
+    btn.addEventListener("click", function () {
+      if (btn.classList.contains("sure")) { clearTimeout(sureTimer); fn(); return; }
+      btn.classList.add("sure"); btn.textContent = sureLabel;
+      clearTimeout(sureTimer);
+      sureTimer = setTimeout(function () { btn.classList.remove("sure"); btn.textContent = label; }, 3000);
+    });
+  }
+  function names(list) { return list.map(function (r) { return r.label || "Do Not"; }).join(", "); }
+
+  /* ---------- views ---------- */
+  var view = "jars";
+  function go(v) {
+    view = v;
+    ["jars", "prizes", "wheel", "ledger", "ideas"].forEach(function (k) { $("view-" + k).classList.toggle("on", k === v); });
+    var tabs = document.querySelectorAll(".tabs button");
+    for (var i = 0; i < tabs.length; i++) tabs[i].setAttribute("aria-selected", tabs[i].getAttribute("data-view") === v ? "true" : "false");
+    if (v === "wheel") drawWheel();
+    window.scrollTo(0, 0);
+  }
+
+  function render() {
+    var list = rows(), t = tally(list);
+    var good = Math.max(0, t.good), bad = Math.max(0, t.bad);
+
+    /* jars */
+    $("giveGood").style.display = readOnly ? "none" : "";
+    $("giveBad").style.display = readOnly ? "none" : "";
+    $("goodNum").textContent = good;
+    $("badNum").textContent = bad;
+    var costs = PRIZES.filter(function (p) { return p.name !== WIPE; }).map(function (p) { return p.cost; }).sort(function (a, b) { return a - b; });
+    var target = costs.filter(function (c) { return c > good; })[0];
+    setRing("ringGood", target ? good / target : 1);
+    $("sprinkles").setAttribute("opacity", good >= costs[0] ? "1" : "0");
+    $("goodNext").textContent = target
+      ? (target - good) + " more for a " + target + " donut prize"
+      : "Enough for anything on the counter";
+    var into = bad % DO_NOTS_PER_PENALTY;
+    setRing("ringBad", t.owed > 0 && into === 0 ? 1 : into / DO_NOTS_PER_PENALTY);
+    $("badNext").textContent = (DO_NOTS_PER_PENALTY - into) + " more until " + (t.owed ? "another spin" : "a spin of the wheel");
+
+    /* the trade */
+    var oldTrade = $("tradeBtn"), trade = oldTrade.cloneNode(false);
+    trade.classList.remove("sure");
+    trade.disabled = readOnly || good < 1 || bad < 1;
+    twoTap(trade, "Trade", "Tap again", function () { add({ kind: "reward", label: WIPE, amount: 1 }); });
+    oldTrade.parentNode.replaceChild(trade, oldTrade);
+
+    /* penalty box */
+    $("penaltySub").textContent = "Every " + DO_NOTS_PER_PENALTY + " Do Nots earns a spin of the wheel. What she did sets how hard it hits.";
+    $("owedNum").textContent = t.owed;
+    $("owedText").textContent = t.owed ? plural(t.owed, "spin", "spins") + " owed" : "Nothing owed.";
+    $("owedMeta").textContent = t.owed
+      ? "Next up, Level " + levelFor(t.nextPoints) + ": " + names(t.next) + "."
+      : "Keep it that way.";
+    $("toWheel").hidden = !t.owed;
+    var badge = $("wheelBadge");
+    badge.hidden = !t.owed; badge.textContent = t.owed;
+
+    /* sentences waiting to be served */
+    var pend = $("pending");
+    pend.textContent = "";
+    if (!t.pending.length) pend.appendChild(el("div", "empty", "No sentences waiting."));
+    t.pending.slice().reverse().forEach(function (r) {
+      var row = el("div", "item");
+      var txt = el("div", "txt");
+      txt.appendChild(el("div", "name", r.label));
+      txt.appendChild(el("div", "meta", r.detail || ""));
+      txt.appendChild(el("div", "meta", "Level " + (r.level || 1) + " · " + (WHEEL_NAMES[r.wheel] || "Wheel") + " · " + when(r.created_at)));
+      row.appendChild(txt);
+      var b = el("button", "act");
+      b.disabled = readOnly;
+      twoTap(b, "Served", "Tap again", function () { patch(r.id, { served: true, served_at: new Date().toISOString() }); });
+      row.appendChild(b); pend.appendChild(row);
+    });
+
+    /* prize counter */
+    $("prizeSub").textContent = "She has " + plural(good, "donut", "donuts") + " to spend. Donuts work like tickets, so she can cash in small or save up.";
+    var box = $("prizes");
+    box.textContent = "";
+    PRIZES.forEach(function (p) {
+      var row = el("div", "item");
+      row.appendChild(el("span", "cost", plural(p.cost, "donut", "donuts")));
+      var txt = el("div", "txt"); txt.appendChild(el("div", "name", p.name)); row.appendChild(txt);
+      var b = el("button", "act");
+      b.disabled = readOnly || good < p.cost || (p.name === WIPE && bad < 1);
+      twoTap(b, "Redeem", "Tap again", function () { add({ kind: "reward", label: p.name, amount: p.cost }); });
+      row.appendChild(b); box.appendChild(row);
+    });
+
+    /* ledger, newest first */
+    $("ledgerSub").textContent = "All time: " + plural(t.donut, "donut", "donuts") + ", " + plural(t.donots.length, "Do Not", "Do Nots") + ".";
+    var led = $("ledger");
+    led.textContent = "";
+    var recent = list.slice().reverse();
+    if (!recent.length) led.appendChild(el("div", "empty", "Nothing on the record yet. A clean slate."));
+    (showAll ? recent : recent.slice(0, 12)).forEach(function (r) {
+      var row = el("div", "item");
+      row.appendChild(el("span", "dot " + r.kind));
+      var txt = el("div", "txt");
+      var title = r.kind === "donut" ? "Donut" : r.kind === "donot" ? "Do Not" : r.kind === "reward" ? "Prize redeemed" : "Sentence";
+      txt.appendChild(el("div", "name", title + (r.label ? ": " + r.label : "")));
+      var meta = when(r.created_at);
+      if (r.kind === "donot") meta += " · " + ["minor", "medium", "major"][(r.pts || 1) - 1];
+      if (r.kind === "reward") meta += " · cost " + plural(r.amount, "donut", "donuts");
+      if (r.kind === "sentence") {
+        meta += " · Level " + (r.level || 1) + ", " + (WHEEL_NAMES[r.wheel] || "wheel");
+        if (r.amount) meta += " · cleared " + plural(r.amount, "Do Not", "Do Nots");
+        meta += r.served ? " · served" : " · not served yet";
+      }
+      txt.appendChild(el("div", "meta", meta));
+      row.appendChild(txt);
+      /* taking back a donut that's been spent, or a Do Not that's been punished, would unbalance the books */
+      var safe = !(r.kind === "donut" && t.good < 1) && !(r.kind === "donot" && t.bad < 1);
+      var u = el("button", "act");
+      u.disabled = readOnly || !safe;
+      twoTap(u, "Undo", "Sure?", function () { remove(r.id); });
+      row.appendChild(u); led.appendChild(row);
+    });
+    if (recent.length > 12) {
+      var m = el("button", "more", showAll ? "Show less" : "Show all " + recent.length);
+      m.addEventListener("click", function () { showAll = !showAll; render(); });
+      led.appendChild(m);
+    }
+
+    syncWheel(t);
+  }
+
+  /* ---------- the wheel ---------- */
+  var canvas = $("wheel"), ctx = canvas.getContext("2d"), spinBtn = $("spin");
+  var TAU = Math.PI * 2;
+  var wheelKey = "anytime", level = 1, manual = false, slices = [], rot = 0, spinning = false;
+  var last = null;          // the result on screen: { t, d, level, wheel, recorded }
+  var lastTally = null;
+  var FILLS = [["#f48fb1", "#4a0f26"], ["#5a3422", "#fff4ea"], ["#fde4ec", "#4a0f26"], ["#c98f4b", "#2c1608"], ["#a3214f", "#fff0f5"], ["#f3d3a4", "#3a2418"]];
+
+  function buildSlices() {
+    slices = WHEELS[wheelKey].filter(function (x) { return x.d[level - 1] !== null; })
+      .map(function (x) { return { t: x.t, d: x.d[level - 1] }; });
+  }
+  function fillFor(i, n) {
+    if (i === n - 1 && n % FILLS.length === 1) return FILLS[2];
+    return FILLS[i % FILLS.length];
+  }
+  function drawWheel() {
+    var W = canvas.width, c = W / 2, r = c - 4, n = slices.length, a = TAU / n;
+    ctx.clearRect(0, 0, W, W);
+    for (var i = 0; i < n; i++) {
+      var s = rot + i * a, f = fillFor(i, n);
+      ctx.beginPath(); ctx.moveTo(c, c); ctx.arc(c, c, r, s, s + a); ctx.closePath();
+      ctx.fillStyle = f[0]; ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,.55)"; ctx.lineWidth = 2; ctx.stroke();
+      ctx.save();
+      ctx.translate(c, c); ctx.rotate(s + a / 2);
+      ctx.textAlign = "right"; ctx.textBaseline = "middle"; ctx.fillStyle = f[1];
+      var size = Math.max(20, Math.min(36, 580 / n));
+      ctx.font = "500 " + size + "px 'Bricolage Grotesque', -apple-system, 'Segoe UI', sans-serif";
+      var label = slices[i].t, maxW = r * 0.58;
+      if (ctx.measureText(label).width > maxW) {
+        while (label.length > 4 && ctx.measureText(label + "…").width > maxW) label = label.slice(0, -1).trim();
+        label += "…";
+      }
+      ctx.fillText(label, r - 22, 0);
+      ctx.restore();
+    }
+  }
+  function winner() {
+    var n = slices.length, a = TAU / n;
+    var ang = ((-Math.PI / 2 - rot) % TAU + TAU) % TAU;
+    return Math.floor(ang / a) % n;
+  }
+  function showResult() {
+    var rec = $("record");
+    if (!last) {
+      $("rLabel").textContent = "Her sentence";
+      $("rName").textContent = "Spin to find out";
+      $("rDetail").textContent = "No respins allowed.";
+      rec.hidden = true; spinBtn.textContent = "Spin";
+      return;
+    }
+    $("rLabel").textContent = "Her sentence · Level " + last.level;
+    $("rName").textContent = last.t;
+    $("rDetail").textContent = last.d;
+    spinBtn.textContent = "Again";
+    rec.hidden = readOnly;
+    rec.disabled = last.recorded;
+    var owed = lastTally && lastTally.owed > 0;
+    rec.textContent = last.recorded ? "Recorded" : (owed ? "Record it and clear " + DO_NOTS_PER_PENALTY + " Do Nots" : "Record this sentence");
+  }
+  function paintControls() {
+    var p = document.querySelectorAll("#wheelPick button"), i;
+    for (i = 0; i < p.length; i++) { p[i].setAttribute("aria-pressed", p[i].getAttribute("data-wheel") === wheelKey ? "true" : "false"); p[i].disabled = spinning; }
+    var l = document.querySelectorAll(".lvl");
+    for (i = 0; i < l.length; i++) { l[i].setAttribute("aria-pressed", Number(l[i].getAttribute("data-level")) === level ? "true" : "false"); l[i].disabled = spinning; }
+    var t = lastTally, why;
+    if (t && t.owed) {
+      var auto = levelFor(t.nextPoints);
+      why = "This spin answers for: " + names(t.next) + "." + (manual && level !== auto ? " Her record says Level " + auto + ", overruled to Level " + level + "." : " That makes it Level " + auto + ".");
+    } else {
+      why = "Nothing owed right now, so this is a free spin. Pick any level.";
+    }
+    $("why").textContent = why;
+  }
+  /* Keep the wheel in step with the ledger, but never yank it mid-spin. */
+  function syncWheel(t) {
+    lastTally = t;
+    if (spinning) return;
+    if (t.owed && !manual) {
+      var auto = levelFor(t.nextPoints);
+      if (auto !== level) { level = auto; rot = 0; buildSlices(); }
+    }
+    if (!slices.length) buildSlices();
+    paintControls(); showResult();
+    if (view === "wheel") drawWheel();
+  }
+  function setWheel(key) {
+    if (spinning) return;
+    wheelKey = key; rot = 0; last = null; buildSlices(); paintControls(); showResult(); drawWheel();
+  }
+  function setLevel(n) {
+    if (spinning) return;
+    level = n; manual = true; rot = 0; last = null; buildSlices(); paintControls(); showResult(); drawWheel();
+  }
+  function spin() {
+    if (spinning || slices.length < 2) return;
+    spinning = true; spinBtn.disabled = true; paintControls();
+    $("rLabel").textContent = "Spinning"; $("rName").textContent = "..."; $("rDetail").textContent = ""; $("record").hidden = true;
+    var start = rot, total = TAU * (6 + Math.random() * 3) + Math.random() * TAU, dur = 5000, t0 = null;
+    function frame(ts) {
+      if (t0 === null) t0 = ts;
+      var p = Math.min(1, (ts - t0) / dur), e = 1 - Math.pow(1 - p, 4);
+      rot = start + total * e;
+      drawWheel();
+      if (p < 1) { requestAnimationFrame(frame); return; }
+      rot = rot % TAU;
+      var w = slices[winner()];
+      last = { t: w.t, d: w.d, level: level, wheel: wheelKey, recorded: false };
+      spinning = false; spinBtn.disabled = false;
+      syncWheel(tally(rows()));
+    }
+    requestAnimationFrame(frame);
+  }
+  function record() {
+    if (!last || last.recorded || readOnly) return;
+    var owed = lastTally && lastTally.owed > 0;
+    last.recorded = true; manual = false;
+    add({ kind: "sentence", label: last.t, detail: last.d, level: last.level, wheel: last.wheel,
+          amount: owed ? DO_NOTS_PER_PENALTY : 0, served: false });
+    showResult();
+  }
+
+  /* ---------- reason sheet ---------- */
+  var veil = $("veil"), sheet = $("sheet"), sheetKind = "donut", ownPts = 1;
+  function paintSev() {
+    var b = document.querySelectorAll("#sev button");
+    for (var i = 0; i < b.length; i++) b[i].setAttribute("aria-pressed", Number(b[i].getAttribute("data-pts")) === ownPts ? "true" : "false");
+  }
+  function openSheet(kind) {
+    sheetKind = kind; ownPts = 1; paintSev();
+    var good = kind === "donut";
+    sheet.className = "sheet " + (good ? "good" : "bad");
+    $("sheetTitle").textContent = (good ? "A donut for " : "A Do Not for ") + NAME;
+    $("sheetSub").textContent = good ? "What did she do right?" : "What did she do? The marks show how much it counts toward the wheel.";
+    var chips = $("sheetChips");
+    chips.textContent = "";
+    if (good) {
+      GOOD_REASONS.forEach(function (reason) {
+        var c = el("button", "chip", reason); c.type = "button";
+        c.addEventListener("click", function () { add({ kind: "donut", label: reason }); closeSheet(); });
+        chips.appendChild(c);
+      });
+    } else {
+      CHARGES.forEach(function (ch) {
+        var c = el("button", "chip", ch.t); c.type = "button";
+        c.appendChild(el("span", "pips", "●●●".slice(0, ch.p)));
+        c.addEventListener("click", function () { add({ kind: "donot", label: ch.t, pts: ch.p }); closeSheet(); });
+        chips.appendChild(c);
+      });
+    }
+    $("ownText").value = "";
+    veil.classList.add("open");
+  }
+  function closeSheet() { veil.classList.remove("open"); }
+
+  /* ---------- wiring ---------- */
+  $("giveGood").addEventListener("click", function () { openSheet("donut"); });
+  $("giveBad").addEventListener("click", function () { openSheet("donot"); });
+  $("cancel").addEventListener("click", closeSheet);
+  veil.addEventListener("click", function (e) { if (e.target === veil) closeSheet(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeSheet(); });
+  $("ownForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var v = $("ownText").value.trim();
+    if (!v) { $("ownText").focus(); return; }
+    if (sheetKind === "donut") add({ kind: "donut", label: v });
+    else add({ kind: "donot", label: v, pts: ownPts });
+    closeSheet();
+  });
+  var sevBtns = document.querySelectorAll("#sev button");
+  for (var s = 0; s < sevBtns.length; s++) sevBtns[s].addEventListener("click", function () { ownPts = Number(this.getAttribute("data-pts")); paintSev(); });
+  var tabBtns = document.querySelectorAll(".tabs button");
+  for (var i = 0; i < tabBtns.length; i++) tabBtns[i].addEventListener("click", function () { go(this.getAttribute("data-view")); });
+  $("toWheel").addEventListener("click", function () { go("wheel"); });
+  var pick = document.querySelectorAll("#wheelPick button");
+  for (var j = 0; j < pick.length; j++) pick[j].addEventListener("click", function () { setWheel(this.getAttribute("data-wheel")); });
+  var lv = document.querySelectorAll(".lvl");
+  for (var k = 0; k < lv.length; k++) lv[k].addEventListener("click", function () { setLevel(Number(this.getAttribute("data-level"))); });
+  spinBtn.addEventListener("click", spin);
+  $("record").addEventListener("click", record);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (view === "wheel") drawWheel(); });
+
+  /* ---------- the suggestion jar ----------
+     A second table, dn_ideas. Either passcode may drop a suggestion in; only the keeper's
+     may rule on one or throw it out. */
+  var IDEAS_API = API.replace("dn_ledger", "dn_ideas");
+  var ideas = [], ideaKind = "", ideaBusy = false;
+  function pullIdeas() {
+    fetch(IDEAS_API + "?select=id,kind,text,status,reply,created_at&order=created_at.desc&limit=200", { headers: headers(), cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+      .then(function (list) {
+        var before = JSON.stringify(ideas);
+        ideas = list.filter(function (x) { return x && typeof x.text === "string"; });
+        if (JSON.stringify(ideas) !== before && !counterFor) renderIdeas();
+      })
+      .catch(function () {});
+  }
+  function kindName(k) {
+    for (var n = 0; n < IDEA_KINDS.length; n++) if (IDEA_KINDS[n].k === k) return IDEA_KINDS[n].t;
+    return "Idea";
+  }
+  var counterFor = "", counterDraft = "";
+  /* One slip of paper per suggestion still waiting, piled up from the bottom of the jar. */
+  function drawJar(waiting) {
+    var NS = "http://www.w3.org/2000/svg", g = $("jarTickets");
+    while (g.firstChild) g.removeChild(g.firstChild);
+    var shown = Math.min(waiting, 18);
+    for (var n = 0; n < shown; n++) {
+      var row = Math.floor(n / 3), col = n % 3;
+      var wob = Math.sin((n + 1) * 12.9898) * 43758.5453; wob = wob - Math.floor(wob);       // steady scatter, same every draw
+      var x = 50 + col * 33 + (wob - .5) * 10, y = 184 - row * 23 + (wob - .5) * 6, tilt = (wob - .5) * 44;
+      var t = document.createElementNS(NS, "g");
+      t.setAttribute("transform", "translate(" + x.toFixed(1) + " " + y.toFixed(1) + ") rotate(" + tilt.toFixed(1) + " 20 10)");
+      var r = document.createElementNS(NS, "rect");
+      r.setAttribute("width", "40"); r.setAttribute("height", "20"); r.setAttribute("rx", "3");
+      r.setAttribute("fill", n % 2 ? "var(--frost)" : "var(--frost-soft)"); r.setAttribute("stroke", "var(--frost-ink)"); r.setAttribute("stroke-width", "1");
+      var l = document.createElementNS(NS, "line");
+      l.setAttribute("x1", "10"); l.setAttribute("x2", "10"); l.setAttribute("y1", "3"); l.setAttribute("y2", "17");
+      l.setAttribute("stroke", "var(--frost-ink)"); l.setAttribute("stroke-width", "1"); l.setAttribute("stroke-dasharray", "2 2");
+      t.appendChild(r); t.appendChild(l); g.appendChild(t);
+    }
+  }
+  function renderIdeas() {
+    var kinds = $("ideaKinds");
+    kinds.textContent = "";
+    IDEA_KINDS.forEach(function (it) {
+      var c = el("button", "chip", it.t); c.type = "button";
+      c.setAttribute("aria-pressed", it.k === ideaKind ? "true" : "false");
+      c.addEventListener("click", function () { ideaKind = it.k; renderIdeas(); });
+      kinds.appendChild(c);
+    });
+    var n = { new: 0, accepted: 0, countered: 0, declined: 0 };
+    ideas.forEach(function (x) { if (n[x.status] !== undefined) n[x.status]++; else n.new++; });
+    drawJar(n.new);
+    $("jarCount").textContent = n.new ? plural(n.new, "ticket", "tickets") + " waiting in the jar" : "The jar is empty";
+    var tallyBox = $("jarTally");
+    tallyBox.textContent = "";
+    [["yes", n.accepted, "approved"], ["counter", n.countered, "counter offered"], ["no", n.declined, "rejected"]].forEach(function (p) {
+      var pill = el("span", "pill " + p[0]);
+      pill.appendChild(el("b", "", String(p[1]))); pill.appendChild(document.createTextNode(p[2]));
+      tallyBox.appendChild(pill);
+    });
+    var badge = $("ideasBadge");
+    badge.hidden = readOnly || !n.new; badge.textContent = n.new;
+
+    var box = $("ideas");
+    box.textContent = "";
+    if (!ideas.length) { box.appendChild(el("div", "empty", "Nothing has been suggested yet.")); return; }
+    ideas.forEach(function (x) {
+      var row = el("div", "idea");
+      row.appendChild(el("span", "tag", kindName(x.kind)));
+      if (x.status === "accepted") row.appendChild(el("span", "tag yes", "Approved"));
+      else if (x.status === "declined") row.appendChild(el("span", "tag no", "Rejected"));
+      else if (x.status === "countered") row.appendChild(el("span", "tag counter", "Counter offer"));
+      else row.appendChild(el("span", "tag no", "Waiting"));
+      row.appendChild(el("div", "body", x.text));
+      if (x.status === "countered" && x.reply) {
+        var rep = el("div", "reply");
+        rep.appendChild(el("span", "", "Counter offer")); rep.appendChild(document.createTextNode(x.reply));
+        row.appendChild(rep);
+      }
+      row.appendChild(el("div", "meta", when(x.created_at)));
+      if (!readOnly) {
+        var acts = el("div", "acts");
+        var ok = el("button", "act", "Approve"); ok.disabled = x.status === "accepted";
+        ok.addEventListener("click", function () { ruleOn(x.id, { status: "accepted" }); });
+        var no = el("button", "act", "Reject"); no.disabled = x.status === "declined";
+        no.addEventListener("click", function () { ruleOn(x.id, { status: "declined" }); });
+        var co = el("button", "act", "Counter");
+        co.addEventListener("click", function () { counterFor = counterFor === x.id ? "" : x.id; counterDraft = x.reply || ""; renderIdeas(); });
+        var d = el("button", "act");
+        twoTap(d, "Delete", "Sure?", function () { tossIdea(x.id); });
+        acts.appendChild(ok); acts.appendChild(co); acts.appendChild(no); acts.appendChild(d);
+        row.appendChild(acts);
+        if (counterFor === x.id) {
+          var f = el("form", "counterForm"), inp = el("input");
+          inp.type = "text"; inp.maxLength = 300; inp.placeholder = "Your counter offer"; inp.value = counterDraft;
+          inp.addEventListener("input", function () { counterDraft = inp.value; });
+          var go2 = el("button", "act", "Send"); go2.type = "submit";
+          f.appendChild(inp); f.appendChild(go2);
+          f.addEventListener("submit", function (e) {
+            e.preventDefault();
+            var v = inp.value.trim();
+            if (!v) { inp.focus(); return; }
+            counterFor = ""; counterDraft = "";
+            ruleOn(x.id, { status: "countered", reply: v.slice(0, 300) });
+          });
+          row.appendChild(f);
+        }
+      }
+      box.appendChild(row);
+    });
+  }
+  function ideaMsg(text) { $("ideaMsg").textContent = text; }
+  function sendIdea() {
+    var text = $("ideaText").value.trim();
+    if (!text) { $("ideaText").focus(); return; }
+    if (ideaBusy) return;
+    ideaBusy = true; ideaMsg("Sending...");
+    var row = { id: uuid(), kind: ideaKind, text: text.slice(0, 300), status: "new", created_at: new Date().toISOString() };
+    fetch(IDEAS_API, { method: "POST", headers: headers(), body: JSON.stringify(row) })
+      .then(function (r) {
+        if (!r.ok) throw new Error(String(r.status));
+        ideas.unshift(row); $("ideaText").value = ""; ideaMsg("It's in the jar."); renderIdeas();
+      })
+      .catch(function () { ideaMsg("That didn't go through. Try again in a moment."); })
+      .then(function () { ideaBusy = false; });
+  }
+  function ruleOn(id, fields) {
+    if (readOnly) return;
+    ideas.forEach(function (x) { if (x.id === id) Object.keys(fields).forEach(function (k) { x[k] = fields[k]; }); });
+    renderIdeas();
+    fetch(IDEAS_API + "?id=eq." + encodeURIComponent(id), { method: "PATCH", headers: headers(), body: JSON.stringify(fields) })
+      .then(function (r) { if (!r.ok) throw new Error(String(r.status)); })
+      .catch(function () { ideaMsg("That didn't save. Try again in a moment."); pullIdeas(); });
+  }
+  function tossIdea(id) {
+    if (readOnly) return;
+    ideas = ideas.filter(function (x) { return x.id !== id; });
+    renderIdeas();
+    fetch(IDEAS_API + "?id=eq." + encodeURIComponent(id), { method: "DELETE", headers: headers() })
+      .then(function (r) { if (!r.ok) throw new Error(String(r.status)); })
+      .catch(function () { ideaMsg("That didn't save. Try again in a moment."); pullIdeas(); });
+  }
+  $("ideaSend").addEventListener("click", sendIdea);
+
+  /* ---------- the gate ---------- */
+  function b64(str) {
+    var bin = atob(str), out = new Uint8Array(bin.length);
+    for (var n = 0; n < bin.length; n++) out[n] = bin.charCodeAt(n);
+    return out;
+  }
+  function unseal(key, part) {
+    return crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(part.iv) }, key, b64(part.data));
+  }
+  /* Resolves { role, config, token } when the passcode fits either lock, rejects when it fits neither. */
+  function tryPass(pass) {
+    var enc = new TextEncoder(), subtle = crypto.subtle;
+    return subtle.importKey("raw", enc.encode(pass), "PBKDF2", false, ["deriveKey"]).then(function (base) {
+      return subtle.deriveKey({ name: "PBKDF2", salt: b64(SEALED.salt), iterations: SEALED.iter, hash: "SHA-256" },
+        base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+    }).then(function (key) {
+      return unseal(key, SEALED.wraps[0]).then(function (k) { return { role: "view", k: k }; }, function () {
+        return unseal(key, SEALED.wraps[1]).then(function (k) { return { role: "edit", k: k }; });
+      });
+    }).then(function (got) {
+      return subtle.importKey("raw", got.k, "AES-GCM", false, ["decrypt"]).then(function (ck) {
+        return unseal(ck, SEALED.content);
+      }).then(function (plain) {
+        return subtle.digest("SHA-256", enc.encode("dn1|" + pass)).then(function (hash) {
+          var hex = Array.prototype.map.call(new Uint8Array(hash), function (x) { return ("0" + x.toString(16)).slice(-2); }).join("");
+          return { role: got.role, config: JSON.parse(new TextDecoder().decode(plain)), token: hex };
+        });
+      });
+    });
+  }
+  var started = false;
+  function openUp(pass, got) {
+    applyConfig(got.config);
+    passToken = got.token;
+    readOnly = got.role !== "edit";
+    try { localStorage.setItem(PASS, pass); } catch (e) {}
+    server = clean(readJSON(CACHE, []));
+    if (!readOnly) { adds = readJSON(ADDS, {}); patches = readJSON(PATCHES, {}); dels = readJSON(DELS, {}); }
+    document.body.classList.add("open");
+    setStatus("", "Loading...");
+    render(); renderIdeas();
+    pull();
+    if (started) return;
+    started = true;
+    setInterval(function () { if (passToken && !document.hidden && !spinning && !veil.classList.contains("open")) pull(); }, 5000);
+    document.addEventListener("visibilitychange", function () { if (passToken && !document.hidden) pull(); });
+  }
+  function gateMsg(text) { $("gateMsg").textContent = text; }
+  $("gateForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var pass = $("gateKey").value.trim();
+    if (!pass) return;
+    if (!window.crypto || !crypto.subtle) { gateMsg("This browser can't open the page. Try Safari or Chrome."); return; }
+    gateMsg("Checking...");
+    tryPass(pass).then(function (got) { gateMsg(""); $("gateKey").value = ""; openUp(pass, got); },
+                       function () { gateMsg("That passcode doesn't fit."); });
+  });
+  $("forget").addEventListener("click", function () {
+    passToken = ""; readOnly = true; server = []; adds = {}; patches = {}; dels = {}; ideas = [];
+    clearLocal();
+    document.body.classList.remove("open");
+    go("jars");
+  });
+  (function () {
+    var saved = "";
+    try { saved = localStorage.getItem(PASS) || ""; } catch (e) {}
+    if (saved && window.crypto && crypto.subtle) {
+      tryPass(saved).then(function (got) { openUp(saved, got); }, function () { clearLocal(); });
+    }
+  })();
+})();
+</script>
+</body>
+</html>
